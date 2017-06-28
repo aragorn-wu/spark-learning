@@ -9,9 +9,14 @@ import org.apache.spark.sql.SparkSession
 object SparkSql {
   def main(args: Array[String]): Unit = {
 
-    val spark = SparkSession.builder().appName("spark-mysql").master("spark://10.10.20.189:7077").getOrCreate();
+    val spark = SparkSession.builder()
+      .appName("spark-mysql")
+      .master("spark://10.10.20.189:7077")
+      .getOrCreate();
     spark.sparkContext.addJar("C:\\Users\\Administrator\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.30\\mysql-connector-java-5.1.30.jar");
-    val df = spark.sqlContext.load("jdbc", Map("url" -> "jdbc:mysql://10.10.20.183:3306/tpcc1000?user=root&password=root", "dbtable" -> "history"));
+
+
+    val df = spark.read.jdbc("jdbc:mysql://10.10.20.183:3306/mysql?user=root&password=root","db",null);
 
     df.printSchema
     df.select("h_data").show(10)
