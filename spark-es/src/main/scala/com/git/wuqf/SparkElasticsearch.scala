@@ -42,4 +42,19 @@ object Save {
     return sc;
   }
 
+  def queryAll(sc: SparkContext): Unit = {
+    val rdd = EsSpark.esRDD(sc,"spark/docs")
+    rdd.foreach(line => {
+      val key = line._1
+      val value = line._2
+      println("------------------key:" + key)
+      for (tmp <- value) {
+        val key1 = tmp._1
+        val value1 = tmp._2
+        println("------------------key1:" + key1)
+        println("------------------value1:" + value1)
+      }
+    })
+  }
+
 }
