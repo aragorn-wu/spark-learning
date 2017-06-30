@@ -59,7 +59,7 @@ object SparkElasticsearch {
 
     var ipCounts: Map[String, Int] = new HashMap[String,Int]()
     val datas = rdd.take(10);
-    datas.foreach { content =>
+    rdd.collect().foreach { content =>
       val ip = String.valueOf(content._2("clientip"))
       if (!ipCounts.contains(ip)) {
         ipCounts = ipCounts.updated(ip,1)
