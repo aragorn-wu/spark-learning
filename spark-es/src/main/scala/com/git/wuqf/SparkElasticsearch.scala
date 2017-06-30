@@ -1,11 +1,15 @@
 package com.git.wuqf
 
 //import org.apache.log4j.{Level, Logger}
+import java.util
+
 import org.apache.hadoop.io.{MapWritable, Text}
 import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.{SparkConf, SparkContext}
 import org.elasticsearch.spark._
 import org.elasticsearch.spark.rdd.EsSpark
+
+import scala.collection.immutable.HashMap
 
 
 /**
@@ -53,18 +57,17 @@ object SparkElasticsearch {
   def ipCount(sc: SparkContext): Unit = {
     val rdd = EsSpark.esRDD(sc, "apache-access-2016/apache-access")
 
-    var ipCounts: Map[String, Int] = Map();
+    var ipCounts: Map[String, Int] = new HashMap[String,Int]()
     val datas = rdd.take(10);
     datas.foreach { content =>
       val ip = String.valueOf(content._2("clientip"))
-      println("ip:" + ip + "\n")
-
       if (!ipCounts.contains(ip)) {
-        ipCounts += (ip -> 1)
+        ipCounts = ipCounts.updated(ip,1)
       }else{
-        ipCounts.updated(ip,ipCounts(ip)+1)
+        ipCounts=ipCounts.updated(ip,ipCounts(ip)+1)
       }
     }
+    ipCounts.keys.foreach(i=>println("key:"+i+". value:"+ipCounts(i)))
     println("xxxxxxxxxxxxxxxx")
   }
 
