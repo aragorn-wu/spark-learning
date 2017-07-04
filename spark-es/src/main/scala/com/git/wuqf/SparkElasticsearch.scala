@@ -22,6 +22,7 @@ object SparkElasticsearch {
   def main(args: Array[String]): Unit = {
     var sc = initSpark();
     ipCount(sc)
+    utilSave(sc)
   }
 
   def utilSave(sc: SparkContext): Unit = {
@@ -57,17 +58,19 @@ object SparkElasticsearch {
   def ipCount(sc: SparkContext): Unit = {
     val rdd = EsSpark.esRDD(sc, "apache-access-2016/apache-access")
 
-    var ipCounts: Map[String, Int] = new HashMap[String,Int]()
+    var ipCounts: Map[String, Int] = new HashMap[String, Int]()
     val datas = rdd.take(10);
-    rdd.collect().foreach { content =>
+    datas.foreach { content =>
       val ip = String.valueOf(content._2("clientip"))
+
       if (!ipCounts.contains(ip)) {
-        ipCounts = ipCounts.updated(ip,1)
-      }else{
-        ipCounts=ipCounts.updated(ip,ipCounts(ip)+1)
+        ipCounts = ipCounts.updated(ip, 1)
+      } else {
+        ipCounts = ipCounts.updated(ip, ipCounts(ip) + 1)
       }
     }
-    ipCounts.keys.foreach(i=>println("key:"+i+". value:"+ipCounts(i)))
+
+    ipCounts.keys.foreach(i => println("key:" + i + ". value:" + ipCounts(i)))
     println("xxxxxxxxxxxxxxxx")
   }
 
