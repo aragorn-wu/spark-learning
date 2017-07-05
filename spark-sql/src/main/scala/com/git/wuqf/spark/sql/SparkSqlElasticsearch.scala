@@ -15,7 +15,7 @@ object SparkSqlElasticsearch {
 
   def main(args: Array[String]): Unit = {
     var sc = initSpark();
-    ipCount(initSparkSession(initSpark()))
+    slowQueryCount(initSparkSession(initSpark()))
   }
 
   def initSpark(): SparkConf = {
@@ -45,7 +45,20 @@ object SparkSqlElasticsearch {
       .groupBy("clientip")
       .count()
       .rdd.map(row => Map("accessIp" -> row.getString(0), "accessTimes" -> row.getLong(1)))
-    EsSpark.saveToEs(ds, "apache-acess/access-count")
+    EsSpark.saveToEs(ds, "count/access-acess")
+  }
+
+  def slowQueryCount(sc: SparkSession): Unit = {
+    val options = Map("pushdown" -> "true")
+    val access = sc.read.format("org.elasticsearch.spark.sql")
+      .options(options)
+      .load("logstash-mysqlslowlog-2017/mysqlslowlog")
+    val ds = access
+      .select("query")
+      .groupBy("query")
+      .count()
+      .rdd.map(row => Map("query" -> row.getString(0), "times" -> row.getLong(1)))
+    EsSpark.saveToEs(ds, "count/mysql-slowquery")
   }
 
 }
