@@ -15,7 +15,7 @@ object SparkSqlElasticsearch {
 
   def main(args: Array[String]): Unit = {
     var sc = initSpark();
-    slowQueryCount(initSparkSession(initSpark()))
+    httpMethodCount(initSparkSession(initSpark()))
   }
 
   def initSpark(): SparkConf = {
@@ -59,6 +59,19 @@ object SparkSqlElasticsearch {
       .count()
       .rdd.map(row => Map("query" -> row.getString(0), "times" -> row.getLong(1)))
     EsSpark.saveToEs(ds, "count/mysql-slowquery")
+  }
+
+  def httpMethodCount(sc: SparkSession): Unit = {
+    val options = Map("pushdown" -> "true")
+    val access = sc.read.format("org.elasticsearch.spark.sql")
+      .options(options)
+      .load("logstash-tomcat_access_realtime-2017/tomcat_access_realtime")
+    val ds = access
+      .select("verb")
+      .groupBy("verb")
+      .count()
+      .rdd.map(row => Map("verb" -> row.getString(0), "times" -> row.getLong(1)))
+    EsSpark.saveToEs(ds, "count/tomcat-method")
   }
 
 }
