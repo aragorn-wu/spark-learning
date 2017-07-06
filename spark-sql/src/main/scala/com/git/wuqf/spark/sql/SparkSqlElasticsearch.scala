@@ -14,13 +14,16 @@ object SparkSqlElasticsearch {
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 
   def main(args: Array[String]): Unit = {
-    ipCount(initSparkSession(initSparkConf()))
+    slowQueryTime(initSparkSession(initSparkConf()))
   }
 
   def initSparkConf(): SparkConf = {
     val conf = new SparkConf().setAppName("spark-sql-es").setMaster("spark://10.10.20.189:7077")
       .set("es.index.auto.create", "true")
       .set("es.nodes", "10.10.20.189")
+      .set("es.net.http.auth.user", "elastic")
+      .set("es.net.http.auth.pass", "changeme")
+
       .setJars(List("C:\\Users\\Administrator\\.m2\\repository\\org\\elasticsearch\\elasticsearch-spark-20_2.11\\5.4.4\\elasticsearch-spark-20_2.11-5.4.4.jar",
         "D:\\git\\spark-demo\\spark-sql\\target\\spark-sql-1.0-SNAPSHOT.jar"));
 
@@ -58,6 +61,20 @@ object SparkSqlElasticsearch {
       .count()
       .rdd.map(row => Map("query" -> row.getString(0), "times" -> row.getLong(1)))
     EsSpark.saveToEs(ds, "count/mysql-slowquery")
+  }
+
+  def slowQueryTime(sc: SparkSession): Unit = {
+    val options = Map("pushdown" -> "true")
+    val access = sc.read.format("org.elasticsearch.spark.sql")
+      .options(options)
+      .load("logstash-mysqlslowlog-2017/mysqlslowlog")
+    val ds = access
+      .select("query", "query_time")
+      .filter("query_time is not null")
+      .groupBy("query")
+      .max("query_time")
+      .rdd.map(row => Map("query" -> row.getString(0), "query_time" -> row.getFloat(1)))
+    EsSpark.saveToEs(ds, "time/mysql-slowquery")
   }
 
   def httpMethodCount(sc: SparkSession): Unit = {

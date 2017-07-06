@@ -60,7 +60,6 @@ object FileStreaming {
     val peopleDF = sparkSession.createDataFrame(rowRDD, schema)
     peopleDF.createOrReplaceTempView("people")
     val results = sparkSession.sql("select name from people")
-    //results.map(attributes => "Name: " + attributes(1)).show()
     results.show()
   }
 
