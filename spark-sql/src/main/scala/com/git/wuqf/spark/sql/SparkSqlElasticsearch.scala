@@ -22,7 +22,7 @@ object SparkSqlElasticsearch {
       .set("es.index.auto.create", "true")
       .set("es.nodes", "10.10.20.189")
       .set("es.net.http.auth.user", "elastic")
-      .set("es.net.http.auth.pass", "changeme")
+      .set("es.net.http.auth.pass", "elastic")
 
       .setJars(List("C:\\Users\\Administrator\\.m2\\repository\\org\\elasticsearch\\elasticsearch-spark-20_2.11\\5.4.4\\elasticsearch-spark-20_2.11-5.4.4.jar",
         "D:\\git\\spark-demo\\spark-sql\\target\\spark-sql-1.0-SNAPSHOT.jar"));
