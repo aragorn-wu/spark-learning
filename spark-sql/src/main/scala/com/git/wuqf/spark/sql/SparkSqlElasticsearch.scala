@@ -14,11 +14,10 @@ object SparkSqlElasticsearch {
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 
   def main(args: Array[String]): Unit = {
-    var sc = initSpark();
-    httpMethodCount(initSparkSession(initSpark()))
+    ipCount(initSparkSession(initSparkConf()))
   }
 
-  def initSpark(): SparkConf = {
+  def initSparkConf(): SparkConf = {
     val conf = new SparkConf().setAppName("spark-sql-es").setMaster("spark://10.10.20.189:7077")
       .set("es.index.auto.create", "true")
       .set("es.nodes", "10.10.20.189")
