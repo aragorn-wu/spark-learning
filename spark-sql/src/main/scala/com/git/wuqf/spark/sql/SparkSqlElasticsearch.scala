@@ -14,7 +14,7 @@ object SparkSqlElasticsearch {
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 
   def main(args: Array[String]): Unit = {
-    slowQueryTime(initSparkSession(initSparkConf()))
+    syslogLevelCount(initSparkSession(initSparkConf()))
   }
 
   def initSparkConf(): SparkConf = {
@@ -90,4 +90,16 @@ object SparkSqlElasticsearch {
     EsSpark.saveToEs(ds, "count/tomcat-method")
   }
 
+  def syslogLevelCount(sc: SparkSession): Unit = {
+    val options = Map("pushdown" -> "true")
+    val access = sc.read.format("org.elasticsearch.spark.sql")
+      .options(options)
+      .load("syslog-2017.07.04/syslog")
+    val ds = access
+      .select("syslog_facility")
+      .groupBy("syslog_facility")
+      .count()
+      .rdd.map(row => Map("syslog_facility" -> row.getString(0), "times" -> row.getLong(1)))
+    EsSpark.saveToEs(ds, "count/syslog-level")
+  }
 }
