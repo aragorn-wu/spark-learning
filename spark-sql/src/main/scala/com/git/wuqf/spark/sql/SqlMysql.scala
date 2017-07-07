@@ -6,7 +6,7 @@ import org.apache.spark.sql.SparkSession
 /**
   * Created by Administrator on 2017/6/20.
   */
-object SparkMysql {
+object SqlMysql {
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSession.builder()

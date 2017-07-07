@@ -1,17 +1,12 @@
-package com.git.wuqf
+package com.git.wuqf.spark.native
 
 //import org.apache.log4j.{Level, Logger}
 import org.apache.spark.{SparkConf, SparkContext}
-import org.elasticsearch.spark._
-import org.elasticsearch.spark.rdd.EsSpark
-
-import scala.collection.immutable.HashMap
-
 
 /**
   * Created by Administrator on 2017/6/20.
   */
-object NativeOperation {
+object NativeFile {
 
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 

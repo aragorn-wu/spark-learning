@@ -1,16 +1,16 @@
 package com.git.wuqf.spark.sql
 
 //import org.apache.log4j.{Level, Logger}
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
-import org.apache.spark.sql.{Row, SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{Row, SparkSession}
 import org.elasticsearch.spark.rdd.EsSpark
 
 
 /**
   * Created by Administrator on 2017/6/20.
   */
-object SparkElasticsearch {
+object SqlElasticsearch {
 
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 
@@ -24,7 +24,6 @@ object SparkElasticsearch {
       .set("es.nodes", "10.10.20.189")
       .set("es.net.http.auth.user", "elastic")
       .set("es.net.http.auth.pass", "elastic")
-
       .setJars(List("C:\\Users\\Administrator\\.m2\\repository\\org\\elasticsearch\\elasticsearch-spark-20_2.11\\5.4.4\\elasticsearch-spark-20_2.11-5.4.4.jar",
         "D:\\git\\spark-demo\\spark-sql\\target\\spark-sql-1.0-SNAPSHOT.jar"));
 

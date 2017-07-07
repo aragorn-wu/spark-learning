@@ -1,13 +1,13 @@
 package com.git.wuqf.spark.sql
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{Row, SparkSession}
 
 /**
   * Created by Administrator on 2017/7/7.
   */
-object SparkFile {
+object SqlFile {
 
   def main(args: Array[String]): Unit = {
     testSchema(initSparkSession())
