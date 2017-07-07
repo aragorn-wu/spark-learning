@@ -1,7 +1,8 @@
 package com.git.wuqf.spark.sql
 
 //import org.apache.log4j.{Level, Logger}
-import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.elasticsearch.spark.rdd.EsSpark
 
@@ -9,7 +10,7 @@ import org.elasticsearch.spark.rdd.EsSpark
 /**
   * Created by Administrator on 2017/6/20.
   */
-object SparkSqlElasticsearch {
+object SparkElasticsearch {
 
   //Logger.getLogger("org").setLevel(Level.DEBUG)
 
@@ -101,5 +102,20 @@ object SparkSqlElasticsearch {
       .count()
       .rdd.map(row => Map("syslog_facility" -> row.getString(0), "times" -> row.getLong(1)))
     EsSpark.saveToEs(ds, "count/syslog-level")
+  }
+
+  def testSchema(sparkSession: SparkSession): Unit = {
+    val peopleRDD = sparkSession.sparkContext.textFile("people.txt")
+    val schemaString = "name age"
+    val fields = schemaString.split(" ")
+      .map(fieldName => StructField(fieldName, StringType, nullable = true))
+    val schema = StructType(fields)
+    val rowRDD = peopleRDD
+      .map(_.split(","))
+      .map(attributes => Row(attributes(0), attributes(1).trim))
+    val peopleDF = sparkSession.createDataFrame(rowRDD, schema)
+    peopleDF.createOrReplaceTempView("people")
+    val results = sparkSession.sql("select name from people")
+    results.show()
   }
 }

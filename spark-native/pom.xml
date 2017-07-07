@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spark-file</artifactId>
+    <artifactId>spark-native</artifactId>
+
 
     <dependencies>
         <dependency>
@@ -17,13 +18,9 @@
             <artifactId>spark-core_2.11</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch-spark-20_2.11</artifactId>
+            <version>5.4.4</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.scala-lang</groupId>-->
-            <!--<artifactId>scala-library</artifactId>-->
-        <!--</dependency>-->
     </dependencies>
-
 </project>

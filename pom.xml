@@ -19,6 +19,8 @@
         <module>spark-file</module>
         <module>spark-es</module>
         <module>spark-sql</module>
+        <module>spark-native</module>
+        <module>spark-streaming</module>
     </modules>
 
     <dependencyManagement>
