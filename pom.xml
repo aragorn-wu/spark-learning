@@ -19,6 +19,8 @@
         <module>spark-sql</module>
         <module>spark-native</module>
         <module>spark-streaming</module>
+        <module>spark-ml</module>
+        <module>spark-demos</module>
     </modules>
 
     <dependencyManagement>
@@ -38,6 +40,12 @@
                 <artifactId>spark-sql_2.11</artifactId>
                 <version>${spark.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-mllib_2.11</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.spark</groupId>
                 <artifactId>elasticsearch-spark-20_2.11</artifactId>

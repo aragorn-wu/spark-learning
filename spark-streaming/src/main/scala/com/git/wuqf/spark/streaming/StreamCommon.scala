@@ -12,12 +12,12 @@ object StreamCommon {
     blackListFilter(initSparkStreaming(initLocalSparkConf()))
   }
   def initLocalSparkConf(): SparkConf = {
-    val conf = new SparkConf().setAppName("spark-streaming-flume").setMaster("local[*]").setSparkHome("D:\\setup\\spark-2.1.1-bin-hadoop2.7")
+    val conf = new SparkConf().setAppName("spark-streaming").setMaster("local[*]").setSparkHome("D:\\setup\\spark-2.1.1-bin-hadoop2.7")
     return conf;
   }
 
   def initSparkConf(): SparkConf = {
-    val conf = new SparkConf().setAppName("spark-streaming-flume").setMaster("spark://10.10.20.189:7077")
+    val conf = new SparkConf().setAppName("spark-streaming").setMaster("spark://10.10.20.189:7077")
 
       .setJars(List("C:\\Users\\Administrator\\.m2\\repository\\org\\elasticsearch\\elasticsearch-spark-20_2.11\\5.4.4\\elasticsearch-spark-20_2.11-5.4.4.jar",
         "D:\\git\\spark-demo\\spark-streaming\\target\\spark-streaming-1.0-SNAPSHOT.jar"));
