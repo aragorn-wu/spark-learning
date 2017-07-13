@@ -1,4 +1,4 @@
-package com.git.wuqf.spark.demos
+package com.git.wuqf.spark.demos.regression
 
 import breeze.linalg.sum
 import org.apache.spark.mllib.linalg.Vectors
@@ -11,7 +11,7 @@ import scala.collection.Map
 /**
   * Created by wuqf on 7/12/17.
   */
-object MLRegression {
+object BikeShare {
   def main(args: Array[String]) {
 
     lineRegression(initSparkContext(initLocalSparkConf()))

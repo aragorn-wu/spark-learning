@@ -14,6 +14,7 @@
     <modules>
         <module>film-recomend</module>
         <module>bike-share</module>
+        <module>line-regression</module>
     </modules>
 
 
