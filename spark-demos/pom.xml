@@ -12,8 +12,6 @@
     <artifactId>spark-demos</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>film-recomend</module>
-        <module>bike-share</module>
         <module>line-regression</module>
     </modules>
 
