@@ -31,14 +31,13 @@ object MLRegression {
   def lineRegression(sc: SparkContext): Unit = {
     val records = sc.textFile("src/main/resources/hour.csv").map(_.split(",")).cache()
 
-
     val mappings = for (i <- Range(2, 10)) yield getMapping(records, i)
 
     val cat_len = sum(mappings.map(_.size))
     val num_len = records.first().slice(10, 14).size
     val total_len = cat_len + num_len
 
-    //linear regression data 此部分代码最重要，主要用于产生训练数据集，按照前文所述处理类别特征和实数特征。
+    //产生训练数据集，按照前文所述处理类别特征和实数特征。
     val data = records.map { record =>
 
       val cat_vec = Array.ofDim[Double](cat_len)
@@ -64,11 +63,13 @@ object MLRegression {
 
     // val categoricalFeaturesInfo = Map[Int, Int]()
     //val linear_model=DecisionTree.trainRegressor(data,categoricalFeaturesInfo,"variance",5,32)
-    val linear_model = LinearRegressionWithSGD.train(data, 10, 0.1)
+    val linear_model = LinearRegressionWithSGD.train(data, 40, 0.5)
     val true_vs_predicted = data.map(p => (p.label, linear_model.predict(p.features)))
+
     //输出前五个真实值与预测值
     println(true_vs_predicted.take(5).toVector.toString())
   }
+
   def getMapping(rdd: RDD[Array[String]], idx: Int) = {
     rdd.map(filed => filed(idx)).distinct().zipWithIndex().collectAsMap()
   }
