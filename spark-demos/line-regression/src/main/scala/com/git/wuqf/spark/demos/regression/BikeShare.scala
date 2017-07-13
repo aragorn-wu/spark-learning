@@ -13,7 +13,6 @@ import scala.collection.Map
   */
 object BikeShare {
   def main(args: Array[String]) {
-
     lineRegression(initSparkContext(initLocalSparkConf()))
   }
 
