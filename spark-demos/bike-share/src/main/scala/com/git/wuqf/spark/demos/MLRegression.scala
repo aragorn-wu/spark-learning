@@ -6,6 +6,8 @@ import org.apache.spark.mllib.regression.{LabeledPoint, LinearRegressionWithSGD}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
+import scala.collection.Map
+
 /**
   * Created by wuqf on 7/12/17.
   */
@@ -30,6 +32,8 @@ object MLRegression {
 
   def lineRegression(sc: SparkContext): Unit = {
     val records = sc.textFile("src/main/resources/hour.csv").map(_.split(",")).cache()
+
+
 
     val mappings = for (i <- Range(2, 10)) yield getMapping(records, i)
 
@@ -70,8 +74,9 @@ object MLRegression {
     println(true_vs_predicted.take(5).toVector.toString())
   }
 
-  def getMapping(rdd: RDD[Array[String]], idx: Int) = {
-    rdd.map(filed => filed(idx)).distinct().zipWithIndex().collectAsMap()
+  def getMapping(rdd: RDD[Array[String]], idx: Int) :Map[String, Long]= {
+    val md=rdd.map(filed => filed(idx)).distinct().zipWithIndex().collectAsMap()
+    return md;
   }
 
 }
