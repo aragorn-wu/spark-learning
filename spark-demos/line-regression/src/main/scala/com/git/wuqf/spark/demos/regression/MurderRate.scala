@@ -2,17 +2,7 @@ package com.git.wuqf.spark.demos.regression
 
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.Row
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.Column
-import org.apache.spark.sql.DataFrameReader
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
-import org.apache.spark.sql.Encoder
-import org.apache.spark.sql.DataFrameStatFunctions
-import org.apache.spark.sql.functions._
-import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.evaluation.RegressionEvaluator
 import org.apache.spark.ml.regression.LinearRegression
@@ -20,6 +10,7 @@ import org.apache.spark.ml.tuning.{ParamGridBuilder, TrainValidationSplit}
 
 /**
   * Created by wuqf on 7/13/17.
+  * logistic regression
   */
 object MurderRate {
 
@@ -29,11 +20,24 @@ object MurderRate {
   }
 
   def importData(): DataFrame = {
-    val spark = SparkSession.builder().appName("MurderRate").master("local[*]").config("spark.some.config.option", "some-value").getOrCreate()
+    val spark = SparkSession
+      .builder()
+      .appName("MurderRate")
+      .master("local[*]")
+      .config("spark.some.config.option", "some-value")
+      .getOrCreate()
 
     // For implicit conversions like converting RDDs to DataFrames
     import spark.implicits._
 
+    // Population人口,
+    // Income收入水平,
+    // Illiteracy文盲率,
+    // LifeExp,平均寿命
+    // Murder谋杀率,
+    // HSGrad,教育层度
+    // Frost结霜天数(温度在冰点以下的平均天数) ,
+    // Area州面积
     val dataList: List[(Double, Double, Double, Double, Double, Double, Double, Double)] = List(
       (3615, 3624, 2.1, 69.05, 15.1, 41.3, 20, 50708),
       (365, 6315, 1.5, 69.31, 11.3, 66.7, 152, 566432),
@@ -91,40 +95,6 @@ object MurderRate {
 
   }
 
-  def buildRegressionModel(data: DataFrame) = {
-    val colArray = Array("Population", "Income", "Illiteracy", "LifeExp", "HSGrad", "Frost", "Area")
-
-    val assembler = new VectorAssembler().setInputCols(colArray).setOutputCol("features")
-
-    val vecDF: DataFrame = assembler.transform(data)
-
-    // 建立模型，预测谋杀率Murder
-    // 设置线性回归参数
-    val lr1 = new LinearRegression()
-    val lr2 = lr1.setFeaturesCol("features").setLabelCol("Murder").setFitIntercept(true)
-    // RegParam：正则化
-    val lr3 = lr2.setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
-    val lr = lr3
-
-    // Fit the model
-    val lrModel = lr.fit(vecDF)
-
-    // 输出模型全部参数
-    lrModel.extractParamMap()
-    // Print the coefficients and intercept for linear regression
-    println(s"Coefficients: ${lrModel.coefficients} Intercept: ${lrModel.intercept}")
-
-    val predictions = lrModel.transform(vecDF)
-    predictions.selectExpr("Murder", "round(prediction,1) as prediction").show
-
-    // Summarize the model over the training set and print out some metrics
-    val trainingSummary = lrModel.summary
-    println(s"numIterations: ${trainingSummary.totalIterations}")
-    println(s"objectiveHistory: ${trainingSummary.objectiveHistory.toList}")
-    trainingSummary.residuals.show()
-    println(s"RMSE: ${trainingSummary.rootMeanSquaredError}")
-    println(s"r2: ${trainingSummary.r2}")
-  }
 
   def prediction(data: DataFrame) = {
     val colArray = Array("Population", "Income", "Illiteracy", "LifeExp", "HSGrad", "Frost", "Area")
@@ -140,13 +110,23 @@ object MurderRate {
     val pipeline = new Pipeline().setStages(Array(lr))
 
     // 建立参数网格
-    val paramGrid = new ParamGridBuilder().addGrid(lr.fitIntercept).addGrid(lr.elasticNetParam, Array(0.0, 0.5, 1.0)).addGrid(lr.maxIter, Array(10, 100)).build()
+    val paramGrid = new ParamGridBuilder()
+      .addGrid(lr.fitIntercept)
+      .addGrid(lr.elasticNetParam, Array(0.0, 0.5, 1.0))
+      .addGrid(lr.maxIter, Array(10, 100)).build()
 
     // 选择(prediction, true label)，计算测试误差。
     // 注意RegEvaluator.isLargerBetter，评估的度量值是大的好，还是小的好，系统会自动识别
-    val RegEvaluator = new RegressionEvaluator().setLabelCol(lr.getLabelCol).setPredictionCol(lr.getPredictionCol).setMetricName("rmse")
+    val RegEvaluator = new RegressionEvaluator()
+      .setLabelCol(lr.getLabelCol)
+      .setPredictionCol(lr.getPredictionCol)
+      .setMetricName("rmse")
 
-    val trainValidationSplit = new TrainValidationSplit().setEstimator(pipeline).setEvaluator(RegEvaluator).setEstimatorParamMaps(paramGrid).setTrainRatio(0.8) // 数据分割比例
+    val trainValidationSplit = new TrainValidationSplit()
+      .setEstimator(pipeline)
+      .setEvaluator(RegEvaluator)
+      .setEstimatorParamMaps(paramGrid)
+      .setTrainRatio(0.8) // 数据分割比例
 
     // Run train validation split, and choose the best set of parameters.
     val tvModel = trainValidationSplit.fit(trainingDF)

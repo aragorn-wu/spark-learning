@@ -10,6 +10,7 @@ import scala.collection.Map
 
 /**
   * Created by wuqf on 7/12/17.
+  * line regression
   */
 object BikeShare {
   def main(args: Array[String]) {
