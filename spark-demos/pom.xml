@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>line-regression</module>
+        <module>decesion-tree</module>
     </modules>
 
 
