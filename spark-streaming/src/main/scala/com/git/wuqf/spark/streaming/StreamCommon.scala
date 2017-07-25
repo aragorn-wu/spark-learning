@@ -11,6 +11,7 @@ object StreamCommon {
   def main(args: Array[String]): Unit = {
     blackListFilter(initSparkStreaming(initLocalSparkConf()))
   }
+
   def initLocalSparkConf(): SparkConf = {
     val conf = new SparkConf().setAppName("spark-streaming").setMaster("local[*]").setSparkHome("/opt/bigdata/spark-2.1.1-bin-hadoop2.7")
     return conf;
@@ -41,6 +42,7 @@ object StreamCommon {
 
   /**
     * 对黑名单里面的人员进行过滤
+    *
     * @param ssc
     */
   def blackListFilter(ssc: StreamingContext): Unit = {
