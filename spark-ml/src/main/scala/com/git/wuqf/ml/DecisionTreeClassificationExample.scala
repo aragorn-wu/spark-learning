@@ -35,7 +35,7 @@ object DecisionTreeClassificationExample {
 
     // $example on$
     // Load and parse the data file.
-    val data = MLUtils.loadLibSVMFile(sc, "sample_libsvm_data.txt")
+    val data = MLUtils.loadLibSVMFile(sc, "spark-ml/src/main/resources/sample_libsvm_data.txt")
 
     // Split the data into training and test sets (30% held out for testing)
     val splits = data.randomSplit(Array(0.7, 0.3))
