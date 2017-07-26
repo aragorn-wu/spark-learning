@@ -14,7 +14,7 @@ object SqlFile {
   }
 
   def testSchema(sparkSession: SparkSession): Unit = {
-    val peopleRDD = sparkSession.sparkContext.textFile("people.txt")
+    val peopleRDD = sparkSession.sparkContext.textFile("spark-sql/src/main/resources/people.txt")
     val schemaString = "name age"
     val fields = schemaString.split(" ")
       .map(fieldName => StructField(fieldName, StringType, nullable = true))
@@ -30,9 +30,7 @@ object SqlFile {
 
   def initSparkSession(): SparkSession = {
 
-    val conf = new SparkConf().setAppName("spark-sql-file").setMaster("spark://10.10.20.189:7077")
-      .setJars(List("C:\\Users\\Administrator\\.m2\\repository\\org\\elasticsearch\\elasticsearch-spark-20_2.11\\5.4.4\\elasticsearch-spark-20_2.11-5.4.4.jar",
-        "D:\\git\\spark-demo\\spark-sql\\target\\spark-sql-1.0-SNAPSHOT.jar"));
+    val conf = new SparkConf().setAppName("spark-sql-file").setMaster("local[*]")
 
     val sparkSession = SparkSession.builder()
       .config(conf)
