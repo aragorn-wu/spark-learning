@@ -17,7 +17,7 @@ object MovieStatistics {
     val rowRdd = userRDD.map(_.split("\\|")).map(attributes => Row(attributes(0), attributes(1), attributes(2), attributes(3), attributes(4)))
     val userDF = sparkSession.createDataFrame(rowRdd, schema)
     userDF.createOrReplaceTempView("user")
-    val resulults = sparkSession.sql("select age from user")
+    val resulults = sparkSession.sql("select distinct gender,count(*) from user group by gender")
     resulults.show()
   }
 
