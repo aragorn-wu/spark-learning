@@ -36,16 +36,16 @@ object MovieStatistics {
 
     val years = lines.map(line => line.split("\\|")(2)).map(line => {
       val para = line.split("-")
-      if (para.length==3) {
         try {
           para.length match {
             case 3 => para(2)
+            case _ => 1000
           }
         } catch {
           case e: Exception =>
             e.printStackTrace()
         }
-      }
+
     })
     years.foreach(println(_))
   }
