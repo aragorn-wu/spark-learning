@@ -1,12 +1,12 @@
 package com.git.wuqf.demos.movie
 
-import org.apache.spark.SparkConf
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
 
 object MovieStatistics {
   def main(args: Array[String]): Unit = {
-    userStatistic(initSparkSession())
+    filmConvertYear(initSparkSession())
   }
 
   def userStatistic(sparkSession: SparkSession): Unit = {
@@ -30,4 +30,24 @@ object MovieStatistics {
       .getOrCreate()
     return sparkSession;
   }
+
+  def filmConvertYear(sparkSession: SparkSession): Unit = {
+    val lines = sparkSession.sparkContext.textFile("spark-demos/movie-recommend/src/main/resources/u.item");
+
+    val years = lines.map(line => line.split("\\|")(2)).map(line => {
+      val para = line.split("-")
+      if (para.length==3) {
+        try {
+          para.length match {
+            case 3 => para(2)
+          }
+        } catch {
+          case e: Exception =>
+            e.printStackTrace()
+        }
+      }
+    })
+    years.foreach(println(_))
+  }
+
 }
