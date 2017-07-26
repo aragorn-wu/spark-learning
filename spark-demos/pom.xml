@@ -14,6 +14,7 @@
     <modules>
         <module>line-regression</module>
         <module>decesion-tree</module>
+        <module>movie-recommend</module>
     </modules>
 
 
