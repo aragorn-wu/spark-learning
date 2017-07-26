@@ -15,8 +15,7 @@ object NativeFile {
   }
 
   def initSparkContext(): SparkContext = {
-    val conf = new SparkConf().setAppName("textCount").setMaster("spark://10.10.20.189:7077")
-      .setJars(List("D:\\git\\spark-demo\\spark-file\\target\\spark-file-1.0-SNAPSHOT.jar"));
+    val conf = new SparkConf().setAppName("textCount").setMaster("local[*]")
     val sc = new SparkContext(conf)
     return sc
   }
