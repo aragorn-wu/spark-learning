@@ -55,7 +55,7 @@ object MovieStatistics {
     println(ratingData.count())
     val count = ratingData.count();
 
-    val sratings = ratingData.map(line => line.split("\t")(2))
+    val sratings = ratingData.map(line => line.split("\t").take(3)(2))
     val doubleRatings = sratings.map(x => x.toDouble);
 
     println(doubleRatings.max())
