@@ -31,23 +31,22 @@ object MovieStatistics {
     return sparkSession;
   }
 
+
   def filmConvertYear(sparkSession: SparkSession): Unit = {
     val lines = sparkSession.sparkContext.textFile("spark-demos/movie-recommend/src/main/resources/u.item");
 
     val years = lines.map(line => line.split("\\|")(2)).map(line => {
       val para = line.split("-")
-        try {
-          para.length match {
-            case 3 => para(2)
-            case _ => 1000
-          }
-        } catch {
-          case e: Exception =>
-            e.printStackTrace()
-        }
-
+      para.length match {
+        case 3 => para(2)
+        case _ => 1000
+      }
     })
-    years.foreach(println(_))
+
+    val yearsCount = years.countByValue();
+    yearsCount.keys.foreach(i =>
+      println("year is :" + i + ". count is :" + yearsCount(i))
+    )
   }
 
 }
