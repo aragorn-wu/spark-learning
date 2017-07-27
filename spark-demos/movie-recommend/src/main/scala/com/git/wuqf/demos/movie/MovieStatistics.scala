@@ -6,7 +6,7 @@ import org.apache.spark.sql.{Row, SparkSession}
 
 object MovieStatistics {
   def main(args: Array[String]): Unit = {
-    filmConvertYear(initSparkSession())
+    filmRating(initSparkSession())
   }
 
   def userStatistic(sparkSession: SparkSession): Unit = {
@@ -47,6 +47,29 @@ object MovieStatistics {
     yearsCount.keys.foreach(i =>
       println("year is :" + i + ". count is :" + yearsCount(i))
     )
+  }
+
+  def filmRating(sparkSession: SparkSession): Unit = {
+    val ratingData = sparkSession.sparkContext.textFile("spark-demos/movie-recommend/src/main/resources/u.data");
+    println(ratingData.first())
+    println(ratingData.count())
+    val count = ratingData.count();
+
+    val sratings = ratingData.map(line => line.split("\t")(2))
+    val doubleRatings = sratings.map(x => x.toDouble);
+
+    println(doubleRatings.max())
+
+    val ratingCount = doubleRatings.countByValue();
+    ratingCount.foreach(println)
+
+    val meanRating = doubleRatings.reduce((x, y) =>
+      x + y
+    ) / count;
+    println(meanRating)
+
+    val ratingTimesPerUser = ratingData.map(line => line.split("\t")(0)).countByValue()
+    ratingTimesPerUser.foreach(println)
   }
 
 }
